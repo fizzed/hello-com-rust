@@ -1,3 +1,4 @@
+use std::any::Any;
 use std::io::{BufRead, BufReader, Write};
 use std::net::{TcpListener, TcpStream};
 use std::ptr;
@@ -29,7 +30,7 @@ fn main() {
 
         let mut dispid: i32 = 88;
         let dispid_ptr: *mut i32 = &mut dispid;
-        let propname = w!("Build");
+        let propname = w!("System");
         // the first param of "GetIDsOfNames" uses something called IID_NULL
         // which turns out to be a GUID that's simply all zeroes!!!!
         let IID_NULL = GUID::default();
@@ -51,15 +52,35 @@ fn main() {
         println!("Invoke worked!");
 
         // can every variant be changed to a string?
-        let mut vec: Vec<u16> = Vec::with_capacity(255);
+        /*let mut vec: Vec<u16> = Vec::with_capacity(255);
 
-        let pwstr = VariantToStringAlloc(&result).unwrap().to_string().unwrap();
+        let pwstr = VariantToStringAlloc(&result).unwrap().to_string().unwrap();*/
+
+
+
 
         // VariantToString(&result, vec.as_mut_slice()).unwrap();
 
         //let versionFloat = VariantToDouble(&result).unwrap();
 
-        println!("result was {:?}", pwstr);
+        // let v00 : VARIANT_0_0 = result.Anonymous.try_into().unwrap();
+
+        let vtType = result.Anonymous.Anonymous.vt;
+        println!("type was {:?}", vtType);
+
+        if vtType == VT_I8 {
+            println!("was long, value is {}", VariantToInt64(&result).unwrap());
+        } else if vtType == VT_I4 {
+            println!("was int, value is {}", VariantToInt32(&result).unwrap());
+        } else if vtType == VT_BSTR {
+            println!("was string, value is {}", VariantToStringAlloc(&result).unwrap().to_string().unwrap());
+        } else if vtType == VT_DISPATCH {
+            println!("was dispatch, value is {:?}", result.Anonymous.Anonymous.Anonymous.pdispVal);
+            let dispatch2 = result.Anonymous.Anonymous.Anonymous.pdispVal.as_ref().unwrap();
+            println!("was dispatch, value is {:?}", dispatch2);
+            //println!("was dispatch!, value is {}", Variant(&result).unwrap().to_string().unwrap());
+        }
+
 
 
 
