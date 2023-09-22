@@ -83,8 +83,8 @@ pub fn put_property<S: Into<String>>(dispatch: *const IDispatch, name: S, value:
     let mut params: DISPPARAMS = DISPPARAMS::default();
     params.cArgs = 1;
     params.cNamedArgs = 1;
-    let mut dispidNamed = DISPID_PROPERTYPUT;
-    params.rgdispidNamedArgs = &mut dispidNamed;     // directly from ms c++ example
+    let mut dispid_named = DISPID_PROPERTYPUT;
+    params.rgdispidNamedArgs = &mut dispid_named;     // directly from ms c++ example
     let mut rvv = value.to_variant();
     params.rgvarg = &mut rvv;
 
@@ -109,9 +109,11 @@ pub fn call_method<S: Into<String>>(dispatch: *const IDispatch, name: S, values:
     // setup parameters we need to pass to the com invoke
     // https://learn.microsoft.com/en-us/previous-versions/windows/desktop/automat/getting-and-setting-properties
     let mut params: DISPPARAMS = DISPPARAMS::default();
-    params.cNamedArgs = 0;
     // no dispid for named args on calling a method
+    params.cNamedArgs = 0;
+    params.rgdispidNamedArgs = std::ptr::null_mut();
 
+    // build array of variant arguments in reverse order (no idea why the COM api wants them reversed)
     let args_len: usize = values.len();
     let mut args: Vec<VARIANT> = Vec::new();
     for i in 0..args_len {
