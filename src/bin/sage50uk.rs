@@ -65,7 +65,7 @@ fn main() {
         let item = fields.call_method("Item", &[Variant::from(i+1)]).unwrap().to_dispatch().unwrap();
         let _name = item.get_property("Name").unwrap();
         let _value = item.get_property("Value").unwrap();
-        println!("field: {} => {:?}", _name, _value);
+        //println!("field: {} => {:?}", _name, _value);
     }
 
     println!("took {:.2?} to dump setupData", now.elapsed());

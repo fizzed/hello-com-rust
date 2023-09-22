@@ -4,7 +4,7 @@ use std::result::Result;
 use std::mem::ManuallyDrop;
 use windows::core::{BSTR, GUID, HSTRING, Interface, PCWSTR};
 use windows::Win32::Foundation::{VARIANT_BOOL};
-use windows::Win32::System::Com::{CLSCTX_SERVER, CLSIDFromProgID, CoCreateInstance, COINIT_MULTITHREADED, COINIT_SPEED_OVER_MEMORY, CoInitializeEx, DISPATCH_FLAGS, DISPATCH_METHOD, DISPATCH_PROPERTYGET, DISPATCH_PROPERTYPUT, DISPPARAMS, EXCEPINFO, IDispatch};
+use windows::Win32::System::Com::{CLSCTX_SERVER, CLSIDFromProgID, CoCreateInstance, COINIT_APARTMENTTHREADED, COINIT_MULTITHREADED, COINIT_SPEED_OVER_MEMORY, CoInitializeEx, DISPATCH_FLAGS, DISPATCH_METHOD, DISPATCH_PROPERTYGET, DISPATCH_PROPERTYPUT, DISPPARAMS, EXCEPINFO, IDispatch};
 use windows::Win32::System::Ole::DISPID_PROPERTYPUT;
 use windows::Win32::System::Variant::{VARENUM, VARIANT, VARIANT_0, VARIANT_0_0, VARIANT_0_0_0, VT_BOOL, VT_BSTR, VT_NULL, VT_DISPATCH, VT_EMPTY, VT_I1, VT_I2, VT_I4, VT_I8, VariantClear, VT_R4, VT_R8, VT_DATE};
 
@@ -15,7 +15,9 @@ static DEFAULT_LOCALE_ID: u32 = 0x0400;
 
 pub fn co_initialize() -> Result<(),windows::core::Error> {
     unsafe {
-        return CoInitializeEx(None, COINIT_MULTITHREADED | COINIT_SPEED_OVER_MEMORY);
+        // return CoInitializeEx(None, COINIT_MULTITHREADED | COINIT_SPEED_OVER_MEMORY);
+        // return CoInitializeEx(None, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
+        return CoInitializeEx(None, COINIT_APARTMENTTHREADED );
     }
 }
 
