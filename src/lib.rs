@@ -133,7 +133,13 @@ pub fn call_method<S: Into<String>>(dispatch: *const IDispatch, name: S, values:
 
     unsafe {
         // TODO: on exception we need to cleanup result
-        (*dispatch).Invoke(dispid, &IID_NULL, DEFAULT_LOCALE_ID, wflags, &mut params, Some(&mut result), Some(&mut except_info), None)?;
+        let invoke_result = (*dispatch).Invoke(dispid, &IID_NULL, DEFAULT_LOCALE_ID, wflags, &mut params, Some(&mut result), Some(&mut except_info), None);
+
+        if invoke_result.is_err() {
+            // explore the except_info struct
+            println!("exception: {:?}", except_info.bstrDescription);
+            panic!();
+        }
 
         // safe to clear the variant(s) we created in this method
         //println!("Clearing {} VARIANT(s)", args_len);
